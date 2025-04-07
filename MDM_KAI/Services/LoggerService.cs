@@ -46,11 +46,7 @@
                     using (var fs = new FileStream(dir_path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
                     using (StreamWriter sw = new StreamWriter(fs))
                     {
-                        //System.Diagnostics.StackTrace objStackTrace = new System.Diagnostics.StackTrace(new System.Diagnostics.StackFrame(1));
-                        //var s = objStackTrace.ToString();
-
                         sw.WriteLine($"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}]\t{message}");
-
 #if DEBUG
                         Console.WriteLine($"[INFO] {message}");
 #endif

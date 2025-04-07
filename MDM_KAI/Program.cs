@@ -13,9 +13,7 @@ namespace MDM_KAI
             using IHost host = HostBuilder(args);
 
             var app = host.Services.GetRequiredService<Application>();
-            await app.RunAsync();
-
-            await host.StopAsync();
+            await host.RunAsync();
         }
 
         /// <summary>
@@ -29,7 +27,7 @@ namespace MDM_KAI
              .ConfigureLogging(logging =>
              {
                  logging.AddConsole();
-                 logging.AddFilter("System.Net.Http.HttpClient", LogLevel.Warning);
+                 logging.AddFilter("System.Net.Http.HttpClient", LogLevel.Warning); // Waring 경고 아니면 HTTP 로그안띄움.
              })
              .ConfigureServices((context, services) =>
              {
@@ -55,6 +53,11 @@ namespace MDM_KAI
 
                  // Application 클래스 등록
                  services.AddTransient<Application>();
+                 // Memory Cache 사용
+                 services.AddMemoryCache();
+
+                 // BackgroundService를 등록하여 주기적으로 Application.RunAsync() 호출
+                 services.AddHostedService<BackgrondWorker>();
              })
              .Build();
         }
