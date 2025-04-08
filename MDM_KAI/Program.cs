@@ -1,4 +1,5 @@
-﻿using MDM_KAI.Services;
+﻿using MDM_KAI.Database;
+using MDM_KAI.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,8 +12,8 @@ namespace MDM_KAI
         static async Task Main(string[] args)
         {
             using IHost host = HostBuilder(args);
-
             var app = host.Services.GetRequiredService<Application>();
+            
             await host.RunAsync();
         }
 
@@ -58,9 +59,22 @@ namespace MDM_KAI
 
                  // BackgroundService를 등록하여 주기적으로 Application.RunAsync() 호출
                  services.AddHostedService<BackgrondWorker>();
+
+                 services.AddSingleton<ISettingFiles, SettingFiles>();
+
+                 // IDbConnectionFactory를 OracleConnectionFactory로 등록
+                 services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(CommData.DbConnStr));
+
+                 // Repository 등록
+                 services.AddTransient<CommandRepository>();
+
              })
              .Build();
         }
+
+       
+
+  
 
     }
 }

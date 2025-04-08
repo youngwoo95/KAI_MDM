@@ -4,6 +4,7 @@ using MDM_KAI.Services;
 using System.Text.Json;
 using System.Text;
 using Microsoft.Extensions.Caching.Memory;
+using MDM_KAI.Database;
 
 namespace MDM_KAI
 {
@@ -12,14 +13,17 @@ namespace MDM_KAI
         private readonly IHttpClientFactory HttpClientFactory;
         private readonly IMemoryCache MemoryCache;
         private readonly ILoggerService LoggerService;
+        private readonly CommandRepository CommandRepository;
 
         public Application(IHttpClientFactory _httpclientfactory,
             IMemoryCache _memorycache,
-            ILoggerService _loggerservice)
+            ILoggerService _loggerservice,
+            CommandRepository _commandrepository)
         {
             this.HttpClientFactory = _httpclientfactory;
             this.MemoryCache = _memorycache;
             this.LoggerService = _loggerservice;
+            this.CommandRepository = _commandrepository;
         }
 
         public async Task RunAsync()
@@ -30,6 +34,9 @@ namespace MDM_KAI
 
             var tasks = new List<Task>();
             using var semaphore = new SemaphoreSlim(200);
+
+            var temp = CommandRepository.GetAll();
+            Console.WriteLine("");
 
             for (int i = 0; i < randomData.Count; i++)
             {
